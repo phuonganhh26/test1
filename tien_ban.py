@@ -12,7 +12,7 @@ def MoneyAverage(Doanh_Thu):
     avr = sum(list1)/len(list1)
     print("Số tiền bình quân mỗi tháng là: ", avr)
 
-def MoneyMaxMin(Doanh_Thu):
+def MoneyMinMax(Doanh_Thu):
     list1 = []
     value = Doanh_Thu.values()
     list1 = value

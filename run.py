@@ -17,4 +17,4 @@ while(True):
 print(Doanh_Thu)
 MoneySum(Doanh_Thu)
 MoneyAverage(Doanh_Thu)
-MoneyMaxMin(Doanh_Thu)
+MoneyMinMax(Doanh_Thu)
