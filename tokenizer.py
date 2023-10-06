@@ -1,43 +1,46 @@
 import re
 
-def tokenize_file(file_path):
-    with open(file_path, 'r') as file:
-        code_string = file.read()
 
-    # Define regular expressions for different types of tokens
-    regex_patterns = [
-        ('keyword', r'\b(void|int|for)\b'),
-        ('identifier', r'\b[a-zA-Z_]\w*\b'),
-        ('num', r'\b\d+(?:\.\d+)?(?:[eE][-+]?\d+)?\b'),
-        ('SYMBOL', r'[()+\-=;{},.]'),
-        ('WHITESPACE', r'\s+')
+def lexical_analysis(source_code):
+    # Define regular expressions
+    patterns = [
+        (r"\b(void|int|for)\b", "keyword"),
+        (r"[a-zA-Z_][a-zA-Z0-9_]*", "identifier"),
+        (r"\d+(\.\d+)?(E[+-]?\d+)?", "num"),
+        (r"[=+<(){};.]", "symbol"),
+        (r"\s+", "whitespace"),
     ]
 
     tokens = []
-    line_number = 1
+    position = 0
 
-    while code_string:
+    while position < len(source_code):
         match = None
-        for token_type, pattern in regex_patterns:
-            match = re.match(pattern, code_string)
+        for pattern, token_type in patterns:
+            regex = re.compile(pattern)
+            match = regex.match(source_code, position)
             if match:
-                token_value = match.group(0)
-                if token_type != 'WHITESPACE':
-                    tokens.append((line_number, token_type, token_value))
+                value = match.group(0)
+                if token_type != "whitespace":
+                    tokens.append((token_type, value))
                 break
 
         if not match:
-            raise ValueError(f"Invalid token at line {line_number}")
+            # Handle unrecognized characters
+            tokens.append(("error", source_code[position]))
 
-        code_string = code_string[match.end():]
-        if '\n' in token_value:
-            line_number += token_value.count('\n')
+        position = match.end()
 
     return tokens
 
-# Usage example
-file_path = 'input_file.txt'
-tokens = tokenize_file(file_path)
 
-for line_number, token_type, token_value in tokens:
-    print(f"Line {line_number}: {token_type} - '{token_value}'")
+# Read the input file
+with open("code.cpp", "r") as file:
+    source_code = file.read()
+
+# Perform lexical analysis
+tokens = lexical_analysis(source_code)
+
+# Output the tokens
+for token_type, value in tokens:
+    print(f"{token_type} : {value}")
